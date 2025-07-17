@@ -4,13 +4,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Header from '../components/Header';
+import Header from '../src/components/Header';
 import { RootStackParamList, TabParamList } from './types';
 type IconName = keyof typeof Ionicons.glyphMap;
 
-import Profile from '../screens/Profile';
-import SignIn from '../screens/SignIn';
-import NameFixing from '../screens/NameFixing';
+import Profile from '../src/screens/Profile';
+import SignIn from '../src/screens/SignIn';
+import NameFixing from '../src/screens/NameFixing';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
