@@ -11,9 +11,11 @@ type IconName = keyof typeof Ionicons.glyphMap;
 import Profile from "../src/screens/Profile";
 import SignIn from "../src/screens/SignIn";
 import NameFixing from "../src/screens/NameFixing";
+import { useAuth } from "../src/context/AuthContext";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
+
 
 const TabNavigator = () => {
   return (
@@ -70,8 +72,11 @@ const TabNavigator = () => {
 };
 
 const StackNavigator = () => {
+  const token = useAuth();
   return (
     <Stack.Navigator
+    initialRouteName={token ? "Tabs" : "SignIn"}
+    // initialRouteName="SignIn"
       screenOptions={{
         header: () => <Header />,
       }}

@@ -19,3 +19,11 @@ export interface NameSuggestionsDTO {
     fullNamePrediction : string;
     firstNamePrediction : string;
 }
+
+export interface UserDTO {
+    id: string;
+    name: string;
+    email: string;
+    creationDate: string;
+    mobileNumber?: string;
+}

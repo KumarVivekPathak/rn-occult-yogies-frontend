@@ -5,13 +5,13 @@ import { RootStackNavigation } from '../../navigation/types';
 import { TabParamList } from '../../navigation/types';
 
 const NameFixing = () => {
-  const navigation = useNavigation<RootStackNavigation>();
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Home Screen</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Instructions')}
+       
       >
         <Text style={styles.buttonText}>Go to Instructions</Text>
       </TouchableOpacity>
