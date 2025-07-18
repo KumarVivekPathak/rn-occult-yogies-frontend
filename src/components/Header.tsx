@@ -7,7 +7,7 @@ const Header = () => {
   
   return (
     <SafeAreaView style={[styles.header]}>
-      <Text style={styles.headerText}>Save Life</Text>
+      <Text style={styles.headerText}>Profile</Text>
     </SafeAreaView>
   );
 };

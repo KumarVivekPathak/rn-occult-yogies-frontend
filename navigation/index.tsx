@@ -1,16 +1,16 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Ionicons } from '@expo/vector-icons';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Header from '../src/components/Header';
-import { RootStackParamList, TabParamList } from './types';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import { Ionicons } from "@expo/vector-icons";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Header from "../src/components/Header";
+import { RootStackParamList, TabParamList } from "./types";
 type IconName = keyof typeof Ionicons.glyphMap;
 
-import Profile from '../src/screens/Profile';
-import SignIn from '../src/screens/SignIn';
-import NameFixing from '../src/screens/NameFixing';
+import Profile from "../src/screens/Profile";
+import SignIn from "../src/screens/SignIn";
+import NameFixing from "../src/screens/NameFixing";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -19,25 +19,52 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        header: () => <Header />,
+        // header: () => <Header />,
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName: IconName = 'home';
+          let iconName: IconName = "home";
 
-          if (route.name === 'NameFixing') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
+          if (route.name === "NameFixing") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused ? "person" : "person-outline";
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: "#007AFF",
+        tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="NameFixing" component={NameFixing} />
-      <Tab.Screen name="Profile" component={Profile} />
-
+      <Tab.Screen
+        name="NameFixing"
+        component={NameFixing}
+        options={{
+          title: "Name Fixing",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "magenta",
+          },
+          headerTintColor: "#fff", // optional: white text/icon color
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          title: "Profile",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "magenta",
+          },
+          headerTintColor: "#fff", // optional: white text/icon color
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
     </Tab.Navigator>
   );
 };
@@ -49,27 +76,26 @@ const StackNavigator = () => {
         header: () => <Header />,
       }}
     >
-      <Stack.Screen 
+      <Stack.Screen
         name="SignIn"
         component={SignIn}
         options={{ headerShown: false }}
       />
-      
-      <Stack.Screen 
-        name="Tabs" 
+
+      <Stack.Screen
+        name="Tabs"
         component={TabNavigator}
         options={{ headerShown: false }}
       />
 
-      <Stack.Screen 
-        name="NameFixing" 
+      <Stack.Screen
+        name="NameFixing"
         component={NameFixing}
         options={{
           headerShown: true,
-          title: 'Name Fixing'
+          title: "Name Fixing",
         }}
       />
-
     </Stack.Navigator>
   );
 };

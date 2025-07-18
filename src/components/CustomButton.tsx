@@ -63,7 +63,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         />
       ) : (
         <View style={styles.content}>
-          {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
+
           <Text 
             style={[
               styles.text,
@@ -75,7 +75,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
           >
             {title}
           </Text>
-          {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
+         
         </View>
       )}
     </TouchableOpacity>
@@ -102,12 +102,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  leftIcon: {
-    marginRight: 8,
-  },
-  rightIcon: {
-    marginLeft: 8,
-  },
   text: {
     fontSize: 16,
     fontWeight: '600',
@@ -124,7 +118,7 @@ const styles = StyleSheet.create({
   },
   // Variant Styles
   primaryContainer: {
-    backgroundColor: '#007AFF',
+    backgroundColor: 'magenta',
   },
   primaryText: {
     color: '#FFFFFF',

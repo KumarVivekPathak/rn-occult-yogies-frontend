@@ -1,9 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
-  Tabs: {
-    screen?: keyof TabParamList;
-  };
+  Tabs: undefined;
   Instructions: undefined;
   SignIn: undefined;
   NameFixing: undefined;
