@@ -74,8 +74,8 @@ const StackNavigator = () => {
   const token = useAuth();
   return (
     <Stack.Navigator
-    // initialRouteName={token ? "Tabs" : "SignIn"}
-    initialRouteName="NameNumerologyReport"
+    initialRouteName={token ? "Tabs" : "SignIn"}
+    // initialRouteName="NameNumerologyReport"
       screenOptions={{
         // header: () => <Header />,
       }}

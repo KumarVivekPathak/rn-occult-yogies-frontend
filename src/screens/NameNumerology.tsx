@@ -126,7 +126,7 @@ const NameNumerology = () => {
     const responseData = await generateNameNumerologyReport(token || '', body);
     const id = responseData.id;
     console.log("Name numerology response:", responseData);
-    navigation.navigate('NameNumerologyReport', { id });
+    navigation.navigate('NameNumerologyReport', { id : id });
     setErrors({});
     } catch (error) {
       console.error("Name numerology failed:", error);

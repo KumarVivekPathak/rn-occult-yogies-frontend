@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "../components/CustomButton";
+import { getNameFixingReport } from "../service/APIFunctions";
 
 type RootStackParamList = {
   NameNumerologyReport: { id: string | number };
@@ -51,13 +52,10 @@ const InfoRow = ({ label, value, valueColor = "#1e293b" }) => (
   </View>
 );
 
-const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = ({
-  route,
-}) => {
-  const { id } = route.params || 20;
+const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = () => {
+  const route = useRoute();
+  const { id } = route.params;
   const token = useAuth();
-  console.log("id is ::: ", id);
-
   const [nameNumerologySummary, setNameNumerologySummary] = useState({
     firstNameSum: 6,
     fullNameSum: 6,
@@ -74,9 +72,7 @@ const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = ({
   });
 
   const [selectedSuggestions, setSelectedSuggestions] = useState([]);
-
-  // Mock data for name suggestions
-  const suggestions = [
+  const [suggestions, setSuggestions] = useState([
     {
       id: 1,
       firstName: "Pooja",
@@ -104,50 +100,52 @@ const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = ({
       firstNameNumerology: "32/5",
       fullName: "Pooja Upadddhyay",
       fullNameNumerology: "68/5",
-    },
-    {
-      id: 5,
-      firstName: "Pooja",
-      firstNameNumerology: "32/5",
-      fullName: "Pooja Upadhyay",
-      fullNameNumerology: "64/1",
-    },
-    {
-      id: 6,
-      firstName: "Pooja",
-      firstNameNumerology: "32/5",
-      fullName: "Pooja Uppadhyay",
-      fullNameNumerology: "73/1",
-    },
-    {
-      id: 7,
-      firstName: "Pooja",
-      firstNameNumerology: "32/5",
-      fullName: "Pooja Upaadhyay",
-      fullNameNumerology: "64/1",
-    },
-    {
-      id: 8,
-      firstName: "Pooja",
-      firstNameNumerology: "32/5",
-      fullName: "Pooja Upaddyay",
-      fullNameNumerology: "64/1",
-    },
-    {
-      id: 9,
-      firstName: "Pooja",
-      firstNameNumerology: "32/5",
-      fullName: "Pooja Upaadhyay",
-      fullNameNumerology: "66/3",
-    },
-    {
-      id: 10,
-      firstName: "Pooja",
-      firstNameNumerology: "32/5",
-      fullName: "Pooja Upaddyay",
-      fullNameNumerology: "66/3",
-    },
-  ];
+    }
+  ]);
+
+  useEffect(() => {
+    fetchSuggestions();
+  }, [id, token]);
+
+  const fetchSuggestions = async () => {
+    try {
+      const responseData = await getNameFixingReport(token, id);
+      const firstNameNumerology = responseData.first_name_numerology;
+      const fullNameNumerology = responseData.full_name_numerology;
+      const luckyNumbers = responseData.lucky_numbers;
+      const unluckyNumbers = responseData.unlucky_numbers;
+      const targetNumbers = responseData.target_numbers;
+      const neutralNumbers = responseData.neutral_numbers;
+      const intersectionValues = responseData.intersection;
+
+      const selectedNames = responseData.selected_names.map((name, id) => ({
+        id: id,
+        firstName: name.firstName,
+        firstNameNumerology: name.firstNameSum,
+        fullName: name.name,
+        fullNameNumerology: name.fullNameSum,
+      }));
+
+      setSuggestions(selectedNames);
+
+      setNameNumerologySummary({
+        firstNameSum: firstNameNumerology,
+        fullNameSum: fullNameNumerology,
+        intersectionValues : intersectionValues as number[],
+        neutralNumbers : neutralNumbers as number[],
+        luckyNumbers : luckyNumbers as number[],
+        unluckyNumbers : unluckyNumbers as number[],
+        nameNumerology: firstNameNumerology,
+        fullNameNumerology: fullNameNumerology,
+        targetNumbers: targetNumbers as number[] || [],
+        firstName: responseData.first_name || "",
+        fullName: responseData.full_name || "",
+        dob: responseData.dob || "",
+      });
+    } catch (error) {
+      console.error("Failed to fetch name fixing report:", error);
+    }
+  };
 
   const handleSelectSuggestion = (suggestion) => {
     setSelectedSuggestions((prev) => {
@@ -162,8 +160,8 @@ const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = ({
     });
   };
 
-  const isSelected = (suggestionId) => {
-    return selectedSuggestions.some((item) => item.id === suggestionId);
+  const isSelected = (suggestionId : number) => {
+    return selectedSuggestions.some((item) => item?.id === suggestionId);
   };
 
   const handleProcessReport = () => {
@@ -190,7 +188,7 @@ const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = ({
     );
   };
 
-  const renderNumbersList = (numbers, color) => (
+  const renderNumbersList = (numbers : number[], color : string) => (
     <View style={styles.numbersContainer}>
       {numbers.map((number, index) => (
         <NumberBadge key={index} number={number} color={color} />
@@ -274,7 +272,7 @@ const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = ({
               <View style={styles.column}>
                 <View style={styles.summaryItem}>
                   <Text style={styles.summaryLabel}>
-                    Current First Name Sum:
+                    First Name Sum:
                   </Text>
                   <NumberBadge
                     number={nameNumerologySummary.firstNameSum}
@@ -283,7 +281,7 @@ const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = ({
                 </View>
                 <View style={styles.summaryItem}>
                   <Text style={styles.summaryLabel}>
-                    Current Full Name Sum:
+                    Full Name Sum:
                   </Text>
                   <NumberBadge
                     number={nameNumerologySummary.fullNameSum}
@@ -521,7 +519,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   numerologyItem: {
-    marginBottom: 16,
+    marginBottom: 8,
     alignItems: "center",
   },
   numerologyLabel: {

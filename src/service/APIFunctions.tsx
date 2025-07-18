@@ -74,3 +74,17 @@ export const generateNameNumerologyReport = async (
     throw error;
   }
 };
+
+export const getNameFixingReport = async (token : string, id : number) => {
+  try {
+      const response = await axios.get(`${BaseURL}/name-fixing/report/${id}`, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      });
+      return response.data;
+  } catch (error) {
+      console.error("Get name fixing report failed:", error);
+      throw error;
+  }
+}
