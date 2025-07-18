@@ -27,3 +27,14 @@ export interface UserDTO {
     creationDate: string;
     mobileNumber?: string;
 }
+
+export interface NameNumerologyDTO {
+    fullname : string;
+    email : string;
+    dob : string;
+    gender : string;
+    fathers_name ?: string;
+    mothers_name ?: string;
+    spouse_name ?: string;
+    mobile : string;
+}

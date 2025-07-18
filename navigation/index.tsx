@@ -1,17 +1,17 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Header from "../src/components/Header";
-import { RootStackParamList, TabParamList } from "./types";
+import { RootStackParamList } from "./types";
 type IconName = keyof typeof Ionicons.glyphMap;
 
 import Profile from "../src/screens/Profile";
 import SignIn from "../src/screens/SignIn";
-import NameFixing from "../src/screens/NameFixing";
 import { useAuth } from "../src/context/AuthContext";
+import NameNumerology from "../src/screens/NameNumerology";
+import NameNumerologyReport from "../src/screens/NameNumerologyReport";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -21,7 +21,6 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        // header: () => <Header />,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: IconName = "home";
 
@@ -33,15 +32,15 @@ const TabNavigator = () => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: "#007AFF",
+        tabBarActiveTintColor: "magenta",
         tabBarInactiveTintColor: "gray",
       })}
     >
       <Tab.Screen
-        name="NameFixing"
-        component={NameFixing}
+        name="NameNumerology"
+        component={NameNumerology}
         options={{
-          title: "Name Fixing",
+          title: "Name Numerology",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: "magenta",
@@ -78,7 +77,7 @@ const StackNavigator = () => {
     initialRouteName={token ? "Tabs" : "SignIn"}
     // initialRouteName="SignIn"
       screenOptions={{
-        header: () => <Header />,
+        // header: () => <Header />,
       }}
     >
       <Stack.Screen
@@ -94,11 +93,18 @@ const StackNavigator = () => {
       />
 
       <Stack.Screen
-        name="NameFixing"
-        component={NameFixing}
+        name="NameNumerologyReport"
+        component={NameNumerologyReport}
         options={{
-          headerShown: true,
-          title: "Name Fixing",
+          title: "Name Numerology Report",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "magenta",
+          },
+          headerTintColor: "#fff", // optional: white text/icon color
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
         }}
       />
     </Stack.Navigator>

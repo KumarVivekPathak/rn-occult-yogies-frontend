@@ -8,6 +8,7 @@ interface CustomInputProps extends TextInputProps {
   inputStyle?: StyleProp<TextStyle>;
   error?: string;
   disabled?: boolean;
+  required ?: boolean;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -18,11 +19,15 @@ const CustomInput: React.FC<CustomInputProps> = ({
   inputStyle,
   error,
   disabled = false,
+  required = false,
   ...props
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
+      <View style={{flexDirection:'row'}}>
       <Text style={[styles.label, labelStyle]}>{label}</Text>
+        {required && <Text style={{color : '#ff4444', marginLeft : 3}}>*</Text>}
+        </View>
       <View style={[
         styles.inputContainer,
         disabled && styles.disabledInputContainer,

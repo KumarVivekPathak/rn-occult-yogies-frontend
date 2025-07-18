@@ -1,6 +1,7 @@
 import axios from "axios";
 import { BaseURL } from "../constants/BaseURL";
 import { useAuth } from "../context/AuthContext";
+import { NameNumerologyDTO } from "./types";
 
 
 export const login = async (email: string, password: string) =>{
@@ -38,6 +39,28 @@ export const updateUserProfile = async (
   try {
     const response = await axios.post(
       `${BaseURL}/auth/update-profile`,
+      body,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Update user profile failed:', error);
+    throw error;
+  }
+};
+
+
+export const generateNameNumerologyReport = async (
+  token: string,
+  body : NameNumerologyDTO
+) => {
+  try {
+    const response = await axios.post(
+      `${BaseURL}/name-fixing/store`,
       body,
       {
         headers: {

@@ -5,6 +5,7 @@ export type RootStackParamList = {
   Instructions: undefined;
   SignIn: undefined;
   NameFixing: undefined;
+  NameNumerologyReport: { id: string | number };
 };
 
 export type TabParamList = {
