@@ -2,6 +2,7 @@ import axios from "axios";
 import { BaseURL } from "../constants/BaseURL";
 import { useAuth } from "../context/AuthContext";
 import { NameNumerologyDTO } from "./types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export const login = async (email: string, password: string) =>{
@@ -85,6 +86,23 @@ export const getNameFixingReport = async (token : string, id : number) => {
       return response.data;
   } catch (error) {
       console.error("Get name fixing report failed:", error);
+      throw error;
+  }
+}
+
+
+export const logout = async (token : string) => {
+  try {
+      const response = await axios.post(`${BaseURL}/auth/logout`, {}, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      });
+      AsyncStorage.removeItem('userToken');
+      return response.data;
+  } catch (error) {
+      console.error("Logout failed:", error);
+      AsyncStorage.removeItem('userToken');
       throw error;
   }
 }

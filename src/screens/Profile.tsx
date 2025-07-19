@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getUserProfile, updateUserProfile } from '../service/APIFunctions';
+import { getUserProfile, logout, updateUserProfile } from '../service/APIFunctions';
 import { UserDTO } from '../service/types';
 import CustomInput from '../components/CustomInput';
 import { useAuth } from '../context/AuthContext';
 import CustomButton from '../components/CustomButton';
 import { z, ZodError } from 'zod';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackNavigation } from '../../navigation/types';
 
 const profileSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -20,6 +22,7 @@ type ProfileErrors = {
 };
 
 const Profile = () => {
+  const navigation = useNavigation<RootStackNavigation>(); 
     const {token} = useAuth();
     const [userData, setUserData] = useState<UserDTO>({
         id: '',
@@ -103,6 +106,19 @@ const Profile = () => {
       }
     };
 
+    const handleLogout = async () => {
+      try {
+        const responseData = await logout(token || '');
+        console.log("respons of logout is : ",responseData);
+        Alert.alert('Logout successfully!');
+        setTimeout(() => {
+          navigation.navigate('SignIn');
+        }, 2000);
+      } catch (error) {
+        Alert.alert('Failed to logout. Please try again.');
+      }
+    }
+
     return (
         <SafeAreaView  style={styles.container}>
              <KeyboardAvoidingView
@@ -147,6 +163,11 @@ const Profile = () => {
                     style={{marginTop : 8}}
                     loading={loading}
                 />
+
+
+                <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+                  <Text style={styles.logoutText}>Logout</Text>
+                </TouchableOpacity>
                </KeyboardAvoidingView>  
         </SafeAreaView>
     )
@@ -185,5 +206,14 @@ const styles = StyleSheet.create({
     successText: {
       color: 'green',
       marginTop: 5,
+    },
+    logoutButton: {
+      marginTop: 40,
+      alignItems: 'center',
+    },
+    logoutText: {
+      color: 'red',
+      fontSize: 16,
+      fontWeight: 'bold',
     },
   });
