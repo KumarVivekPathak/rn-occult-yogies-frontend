@@ -6,11 +6,13 @@ export type RootStackParamList = {
   SignIn: undefined;
   NameFixing: undefined;
   NameNumerologyReport: { id: string | number };
+  MobileNumerologyReport: undefined;
 };
 
 export type TabParamList = {
   NameFixing: undefined;
   Profile: undefined;
+  MobileNumerology: undefined;
 };
 
 export type RootStackNavigation = NativeStackNavigationProp<RootStackParamList>;

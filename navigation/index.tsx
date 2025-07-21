@@ -12,6 +12,8 @@ import SignIn from "../src/screens/SignIn";
 import { useAuth } from "../src/context/AuthContext";
 import NameNumerology from "../src/screens/NameNumerology";
 import NameNumerologyReport from "../src/screens/NameNumerologyReport";
+import MobileNumerology from "../src/screens/MobileNumerology";
+import MobileNumerologyReport from "../src/screens/MobileNumerologyReport";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -26,6 +28,8 @@ const TabNavigator = () => {
 
           if (route.name === "NameFixing") {
             iconName = focused ? "home" : "home-outline";
+          }else if(route.name === "MobileNumerology") {
+            iconName = focused ? "phone-portrait" : "phone-portrait-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
           }
@@ -51,6 +55,23 @@ const TabNavigator = () => {
           },
         }}
       />
+
+      <Tab.Screen
+        name="MobileNumerology"
+        component={MobileNumerology}
+        options={{
+          title: "Mobile Numerology",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "magenta",
+          },
+          headerTintColor: "#fff", // optional: white text/icon color
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+
       <Tab.Screen
         name="Profile"
         component={Profile}
@@ -74,8 +95,8 @@ const StackNavigator = () => {
   const token = useAuth();
   return (
     <Stack.Navigator
-    // initialRouteName={token ? "Tabs" : "SignIn"}
-    initialRouteName="SignIn"
+    initialRouteName={token ? "Tabs" : "SignIn"}
+    // initialRouteName="SignIn"
       screenOptions={{
         // header: () => <Header />,
       }}
@@ -101,12 +122,29 @@ const StackNavigator = () => {
           headerStyle: {
             backgroundColor: "magenta",
           },
-          headerTintColor: "#fff", // optional: white text/icon color
+          headerTintColor: "#fff",  
           headerTitleStyle: {
             fontWeight: "bold",
           },
         }}
       />
+
+      <Stack.Screen
+        name="MobileNumerologyReport"
+        component={MobileNumerologyReport}
+        options={{
+          title: "Mobile Numerology Report",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "magenta",
+          },
+          headerTintColor: "#fff", 
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+
     </Stack.Navigator>
   );
 };
