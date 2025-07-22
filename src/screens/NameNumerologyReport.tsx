@@ -17,6 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "../components/CustomButton";
 import { getNameFixingReport } from "../service/APIFunctions";
+import CustomCheckbox from "../components/CustomCheckBox";
 
 type RootStackParamList = {
   NameNumerologyReport: { id: string | number };
@@ -202,15 +203,6 @@ const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = () => {
     </View>
   );
 
-  const CustomCheckbox = ({ checked, onPress }) => (
-    <TouchableOpacity onPress={onPress} style={styles.checkboxContainer}>
-      <View style={[styles.checkbox, checked && styles.checkboxChecked]}>
-        {checked && <Text style={styles.checkboxText}>✓</Text>}
-      </View>
-    </TouchableOpacity>
-  );
-
-  // Render item for FlatList
   const renderItem = ({ item: suggestion, index }) => (
     <TouchableOpacity
       key={suggestion.id}
@@ -630,28 +622,6 @@ const styles = StyleSheet.create({
   fullNameColumn: {
     flex: 2,
     paddingHorizontal: 4,
-  },
-  checkboxContainer: {
-    padding: 4,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderWidth: 2,
-    borderColor: "#cbd5e1",
-    borderRadius: 4,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  checkboxChecked: {
-    backgroundColor: "#3b82f6",
-    borderColor: "#3b82f6",
-  },
-  checkboxText: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "700",
   },
   nameText: {
     fontSize: 14,

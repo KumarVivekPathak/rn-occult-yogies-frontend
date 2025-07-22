@@ -5,6 +5,8 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import CustomInput from "../components/CustomInput";
@@ -14,6 +16,7 @@ import { z, ZodError } from "zod";
 import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackNavigation } from "../../navigation/types";
+import CustomCheckbox from "../components/CustomCheckBox";
 
 const mobileNumerologySchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -26,6 +29,7 @@ const mobileNumerologySchema = z.object({
   email: z.string().email("Invalid email address"),
   dob: z.string().min(1, "Date of birth is required"),
   gender: z.string().min(1, "Gender is required"),
+  areaOfStruggle: z.array(z.number()).optional(),
 });
 
 type MobileNumerologyErrors = {
@@ -36,10 +40,11 @@ type MobileNumerologyErrors = {
   email?: string;
   dob?: string;
   gender?: string;
+  areaOfStruggle?: number[];
 };
 
 const MobileNumerology = () => {
-    const navigation = useNavigation<RootStackNavigation>();
+  const navigation = useNavigation<RootStackNavigation>();
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -53,6 +58,22 @@ const MobileNumerology = () => {
     { label: "Female", value: "female" },
     { label: "Other", value: "other" },
   ];
+  const areaOfStruggleOptions = [
+    { id: 1, name: "Career" },
+    { id: 2, name: "Health" },
+    { id: 3, name: "Relationships" },
+    { id: 4, name: "Job" },
+    { id: 5, name: "Faimily" },
+  ];
+  const [selectedAreaOfStruggle, setSelectedAreaOfStruggle] = useState<
+    number[]
+  >([]);
+
+  const toggleOption = (id: number) => {
+    setSelectedAreaOfStruggle((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
 
   const ValidateForm = () => {
     const result = mobileNumerologySchema.safeParse({
@@ -63,6 +84,7 @@ const MobileNumerology = () => {
       email,
       dob,
       gender,
+      areaOfStruggle: selectedAreaOfStruggle,
     });
 
     if (!result.success) {
@@ -76,12 +98,12 @@ const MobileNumerology = () => {
       setErrors(fieldErrors);
       return false;
     }
-    
+
     setErrors({});
     return true;
   };
 
-  const onReset = () =>{
+  const onReset = () => {
     setFirstName("");
     setMiddleName("");
     setLastName("");
@@ -90,7 +112,7 @@ const MobileNumerology = () => {
     setGender("");
     setMobileNumber("");
     setErrors({});
-  }
+  };
 
   const handleGenerateReport = () => {
     // if(!ValidateForm()) {
@@ -98,7 +120,6 @@ const MobileNumerology = () => {
     // }
 
     navigation.navigate("MobileNumerologyReport");
-
 
     console.log("Form submitted successfully");
     // Add your form submission logic here
@@ -178,6 +199,33 @@ const MobileNumerology = () => {
             error={errors.gender}
           />
 
+          <View>
+            <Text style={styles.label}>Area Of Struggle</Text>
+            <View style={styles.checkboxGroup}>
+              {areaOfStruggleOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.id}
+                  style={styles.checkboxItem}
+                  onPress={() => toggleOption(option.id)}
+                >
+                  <CustomCheckbox
+                    checked={selectedAreaOfStruggle.includes(option.id)}
+                    onPress={() => toggleOption(option.id)}
+                  />
+                  <Text
+                    style={[
+                      styles.checkboxLabel,
+                      selectedAreaOfStruggle.includes(option.id) &&
+                        styles.checkedLabel,
+                    ]}
+                  >
+                    {option.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
           <View style={styles.buttonContainer}>
             <CustomButton
               title="Generate Report"
@@ -218,5 +266,30 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 12,
+    color: "#1f2937", // gray-800
+  },
+  checkboxGroup: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  checkboxItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 4,
+    marginBottom: 4,
+  },
+  checkboxLabel: {
+    fontSize: 15,
+    color: "#6b7280", // gray-500
+  },
+  checkedLabel: {
+    color: "#4f46e5", // indigo-600
+    fontWeight: "600",
   },
 });
