@@ -189,11 +189,15 @@ const NameNumerologyReport: React.FC<NameNumerologyReportScreenProps> = () => {
     );
   };
 
-  const renderNumbersList = (numbers : number[], color : string) => (
+  const renderNumbersList = (numbers: number[] | undefined | null, color: string) => (
     <View style={styles.numbersContainer}>
-      {numbers.map((number, index) => (
-        <NumberBadge key={index} number={number} color={color} />
-      ))}
+      {Array.isArray(numbers) && numbers.length > 0 ? (
+        numbers.map((number, index) => (
+          <NumberBadge key={index} number={number} color={color} />
+        ))
+      ) : (
+        <Text style={styles.noNumbersText}>No numbers available</Text>
+      )}
     </View>
   );
 
@@ -485,9 +489,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   numbersContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 8,
+    gap: 8,
+  },
+  noNumbersText: {
+    color: '#94a3b8',
+    fontStyle: 'italic',
+    fontSize: 14,
   },
   infoRow: {
     flexDirection: "row",
