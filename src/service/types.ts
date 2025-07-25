@@ -50,3 +50,34 @@ export interface MobileNumerologyDTO {
     gender : string;
     areaOfStruggle ?: number[];
 }
+
+export interface ListItemAPIDTO {
+    id : number;
+    custId : number;
+    wallId : string;
+    first_name : string;
+    middle_name : string | null;
+    last_name : string;
+    date_of_birth : string;
+    place_of_birth : string | null;
+    time_of_birth : string | null;
+    mobile_no : string;
+    countryCode : string;
+    email : string;
+    send_email : number;
+    company_name : string | null;
+    gender : string;
+    created_at : string;
+    updated_at : string;
+    prep : string | null;
+    user_email : string;
+    user_name : string;
+    mobile_id : number
+
+}
+
+export interface MobileNumerologyReportDTO {
+    id : string;
+    name : string;
+}
+    

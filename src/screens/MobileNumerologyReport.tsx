@@ -1,36 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 import { getMobileNumerologyReports } from "../service/APIFunctions";
+import { ListItemAPIDTO, MobileNumerologyReportDTO } from "../service/types";
 
 const MobileNumerologyReport = () => {
     const {token} = useAuth();
-    const [reports, setReports] = useState([
-        {
-            id: "1",
-            name: "Vivek Pathak"
-        },
-        {
-            id: "2",
-            name: "Pooja Upadhyay"
-        },
-        {
-            id: "3",
-            name: "Nidhi Jha"
-        }
-    ]);
+    const [reports, setReports] = useState<MobileNumerologyReportDTO[]>([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         mobileNumerologyReports();
     }, []);
 
     const mobileNumerologyReports = async () => {
+        setLoading(true);
         try {
             const response = await getMobileNumerologyReports(token || '');
             const responseData = response.data;
-            const listData = responseData.map((item : any) => {
-                const id = item.id;
+            const listData = responseData.map((item : ListItemAPIDTO) => {
+                const id = item.id.toString();
                 const firstName = item.first_name || '';
                 const middleName = item.middle_name ? ` ${item.middle_name}` : '';
                 const lastName = item.last_name ? ` ${item.last_name}` : '';
@@ -41,8 +31,11 @@ const MobileNumerologyReport = () => {
                 }
             })
             setReports(listData);
+            setLoading(false);
         } catch (error) {
             console.error("Get mobile numerology report failed:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -127,6 +120,11 @@ const MobileNumerologyReport = () => {
                 stickyHeaderHiddenOnScroll={false}
                 ListEmptyComponent={<Text style={styles.emptyText}>No reports found</Text>}
             />
+            {loading && (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#1e293b" />
+                </View>
+            )}
         </SafeAreaView>
     );
 };
@@ -256,5 +254,10 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#1e293b",
         textAlign: "center",
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "flex-start",
+        alignItems: "center",
     },
 });
