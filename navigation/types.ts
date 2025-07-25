@@ -4,15 +4,18 @@ export type RootStackParamList = {
   Tabs: undefined;
   Instructions: undefined;
   SignIn: undefined;
-  NameFixing: undefined;
   NameNumerologyReport: { id: string | number };
+  MobileNumerologyResults: undefined;
   MobileNumerologyReport: undefined;
+  NameNumerology: undefined;
+  MobileNumerology: undefined;
 };
 
 export type TabParamList = {
-  NameFixing: undefined;
   Profile: undefined;
-  MobileNumerology: undefined;
+  Reports: undefined;
+  Dashboard: undefined;
+  
 };
 
 export type RootStackNavigation = NativeStackNavigationProp<RootStackParamList>;

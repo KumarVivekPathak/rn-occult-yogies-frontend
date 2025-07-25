@@ -32,6 +32,7 @@ const GenderPicker: React.FC<GenderPickerProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState(options);
+  const [internalValue, setInternalValue] = useState(value);
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -43,7 +44,16 @@ const GenderPicker: React.FC<GenderPickerProps> = ({
         open={open}
         setOpen={setOpen}
         value={value}
-        setValue={val => onChange(val())}
+        setValue={(callback) => {
+          if (typeof callback === 'function') {
+            const newValue = callback(internalValue);
+            setInternalValue(newValue);
+            onChange(newValue);
+          } else {
+            setInternalValue(callback);
+            onChange(callback);
+          }
+        }}
         items={items}
         setItems={setItems}
         placeholder="Select Gender"

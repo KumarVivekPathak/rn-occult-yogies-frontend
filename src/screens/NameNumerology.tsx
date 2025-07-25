@@ -137,7 +137,7 @@ const NameNumerology = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} >
+    <SafeAreaView style={{ flex: 1 }} edges={['bottom']} >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}

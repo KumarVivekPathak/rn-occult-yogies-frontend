@@ -13,7 +13,10 @@ import { useAuth } from "../src/context/AuthContext";
 import NameNumerology from "../src/screens/NameNumerology";
 import NameNumerologyReport from "../src/screens/NameNumerologyReport";
 import MobileNumerology from "../src/screens/MobileNumerology";
+import MobileNumerologyResults from "../src/screens/MobileNumerologyResults";
+import Reports from "../src/screens/Reports";
 import MobileNumerologyReport from "../src/screens/MobileNumerologyReport";
+import Dashboard from "../src/screens/Dashboard";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -26,12 +29,14 @@ const TabNavigator = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: IconName = "home";
 
-          if (route.name === "NameFixing") {
+          if (route.name === "Dashboard") {
             iconName = focused ? "home" : "home-outline";
           }else if(route.name === "MobileNumerology") {
             iconName = focused ? "phone-portrait" : "phone-portrait-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "Reports") {
+            iconName = focused ? "document" : "document-outline";
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -40,11 +45,12 @@ const TabNavigator = () => {
         tabBarInactiveTintColor: "gray",
       })}
     >
+
       <Tab.Screen
-        name="NameNumerology"
-        component={NameNumerology}
+        name="Dashboard"
+        component={Dashboard}
         options={{
-          title: "Name Numerology",
+          title: "Dashboard",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: "magenta",
@@ -55,12 +61,12 @@ const TabNavigator = () => {
           },
         }}
       />
-
+      
       <Tab.Screen
-        name="MobileNumerology"
-        component={MobileNumerology}
+        name="Reports"
+        component={Reports}
         options={{
-          title: "Mobile Numerology",
+          title: "Reports",
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: "magenta",
@@ -114,6 +120,38 @@ const StackNavigator = () => {
       />
 
       <Stack.Screen
+        name="NameNumerology"
+        component={NameNumerology}
+        options={{
+          title: "Name Numerology",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "magenta",
+          },
+          headerTintColor: "#fff", // optional: white text/icon color
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+
+      <Stack.Screen
+        name="MobileNumerology"
+        component={MobileNumerology}
+        options={{
+          title: "Mobile Numerology",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "magenta",
+          },
+          headerTintColor: "#fff", // optional: white text/icon color
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+
+      <Stack.Screen
         name="NameNumerologyReport"
         component={NameNumerologyReport}
         options={{
@@ -128,6 +166,23 @@ const StackNavigator = () => {
           },
         }}
       />
+
+      <Stack.Screen
+        name="MobileNumerologyResults"
+        component={MobileNumerologyResults}
+        options={{
+          title: "Mobile Numerology Results",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "magenta",
+          },
+          headerTintColor: "#fff", 
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+
 
       <Stack.Screen
         name="MobileNumerologyReport"

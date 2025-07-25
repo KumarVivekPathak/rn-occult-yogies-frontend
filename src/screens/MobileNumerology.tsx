@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -17,6 +18,9 @@ import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackNavigation } from "../../navigation/types";
 import CustomCheckbox from "../components/CustomCheckBox";
+import { generateMobileNumerologyReport } from "../service/APIFunctions";
+import { MobileNumerologyDTO } from "../service/types";
+import { useAuth } from "../context/AuthContext";
 
 const mobileNumerologySchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -44,6 +48,7 @@ type MobileNumerologyErrors = {
 };
 
 const MobileNumerology = () => {
+  const {token} = useAuth();
   const navigation = useNavigation<RootStackNavigation>();
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
@@ -54,9 +59,9 @@ const MobileNumerology = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [errors, setErrors] = useState<MobileNumerologyErrors>({});
   const genderOptions = [
-    { label: "Male", value: "male" },
-    { label: "Female", value: "female" },
-    { label: "Other", value: "other" },
+    { label: "Male", value: "Male" },
+    { label: "Female", value: "Female" },
+    { label: "Other", value: "Other" },
   ];
   const areaOfStruggleOptions = [
     { id: 1, name: "Career" },
@@ -114,16 +119,38 @@ const MobileNumerology = () => {
     setErrors({});
   };
 
-  const handleGenerateReport = () => {
-    // if(!ValidateForm()) {
-    //   return;
-    // }
+  const handleGenerateReport = async () => {
+    try {
+    if(!ValidateForm()) {
+      return;
+    }
 
-    navigation.navigate("MobileNumerologyReport");
+    const body : MobileNumerologyDTO = {
+      firstName: firstName,
+      lastName: lastName,
+      middleName: middleName,
+      mobileNo: mobileNumber,
+      countryCode: "91",
+      dateOFBirth: dob,
+      gender: gender,
+      emailId: email,
+      areaOfStruggle: selectedAreaOfStruggle
+  }
 
-    console.log("Form submitted successfully");
+    console.log("Mobile numerology:", body);
+    
+    const response = await generateMobileNumerologyReport(token || "",body);
+    console.log("Mobile numerology response:", response);
+
+    // navigation.navigate("MobileNumerologyResults");
+
+    // console.log("Form submitted successfully");
     // Add your form submission logic here
-  };
+  } catch (error) {
+    console.error("Generate mobile numerology report failed:", error);
+    Alert.alert("Generate mobile numerology report failed!");
+  }
+};
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
@@ -132,7 +159,7 @@ const MobileNumerology = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
       >
-        <ScrollView>
+        <ScrollView style={{ flex: 1, height: "100%", }}>
           <CustomInput
             label="First Name"
             required
@@ -190,6 +217,7 @@ const MobileNumerology = () => {
             label="Gender"
             value={gender}
             onChange={(val) => {
+              console.log("Gender:", val);
               setGender(val);
               if (errors.gender)
                 setErrors((prev) => ({ ...prev, gender: undefined }));
@@ -251,6 +279,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#fff",
+    // marginBottom: 16,
     // justifyContent: "center",
     // alignItems: "center",
   },
@@ -263,6 +293,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     marginTop: 16,
+    marginBottom: 46,
   },
   button: {
     flex: 1,

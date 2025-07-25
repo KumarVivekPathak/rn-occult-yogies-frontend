@@ -38,3 +38,15 @@ export interface NameNumerologyDTO {
     spouse_name ?: string;
     mobile : string;
 }
+
+export interface MobileNumerologyDTO {
+    firstName : string;
+    middleName ?: string;
+    lastName : string;
+    mobileNo : string;
+    countryCode : string;
+    dateOFBirth : string;
+    emailId : string;
+    gender : string;
+    areaOfStruggle ?: number[];
+}
