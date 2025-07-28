@@ -108,10 +108,26 @@ export interface MobileNumberDetailsDTO {
     recomendation: string,
     prediction: string[],
     recommendedWallpaper: string,
+    areaOfStruggle ?: WallpaperDTO[]
   };
-    
+
+  export interface WallpaperDTO {
+    id : number;
+    name : string;
+    image_url : string;
+  } 
 export interface MobileNumerologyResultsDTO {
-    mobileNumberDetails: mobileNumberDetailsDTO,
+    mobileNumberDetails: MobileNumberDetailsDTO,
     dashaData: DashaDataDTO,
 }
 
+export interface MobileNumerologyErrorsDTO {
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  mobileNumber?: string;
+  email?: string;
+  dob?: string;
+  gender?: string;
+  areaOfStruggle?: number[];
+};

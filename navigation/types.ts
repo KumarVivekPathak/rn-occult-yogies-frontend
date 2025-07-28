@@ -9,7 +9,7 @@ export type RootStackParamList = {
   MobileNumerologyResults: { data : MobileNumerologyResultsDTO };
   MobileNumerologyReport: undefined;
   NameNumerology: undefined;
-  MobileNumerology: undefined;
+  MobileNumerology: {reportId ?: number};
 };
 
 export type TabParamList = {

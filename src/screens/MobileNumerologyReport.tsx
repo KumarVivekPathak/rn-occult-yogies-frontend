@@ -4,8 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 import { getMobileNumerologyReports } from "../service/APIFunctions";
 import { ListItemAPIDTO, MobileNumerologyReportDTO } from "../service/types";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackNavigation } from "../../navigation/types";
 
 const MobileNumerologyReport = () => {
+    const navigation = useNavigation<RootStackNavigation>();
     const {token} = useAuth();
     const [reports, setReports] = useState<MobileNumerologyReportDTO[]>([]);
     const [loading, setLoading] = useState(false);
@@ -39,23 +42,23 @@ const MobileNumerologyReport = () => {
         }
     };
 
-    const handleView = (id : string) => {
+    const handleView = (id : number) => {
         console.log("View report:", id);
         // Implement view functionality
     };
 
-    const handleEdit = (id : string) => {
+    const handleEdit = (id : number) => {
         console.log("Edit report:", id);
-        // Implement edit functionality
+        navigation.navigate("MobileNumerology", {reportId : id});
     };
 
-    const handleDelete = (id : string) => {
+    const handleDelete = (id : number) => {
         console.log("Delete report:", id);
         // Implement delete functionality
-        setReports(reports.filter(report => report.id !== id));
+        // setReports(reports.filter(report => report.id !== id));
     };
 
-    const handleDownload = (id : string) => {
+    const handleDownload = (id : number) => {
         console.log("Download report:", id);
         // Implement download functionality
     };

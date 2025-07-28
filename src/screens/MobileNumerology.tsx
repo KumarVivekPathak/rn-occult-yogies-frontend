@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -15,11 +16,11 @@ import DOBPicker from "../components/DOBPicker";
 import GenderPicker from "../components/GenderPicker";
 import { z, ZodError } from "zod";
 import CustomButton from "../components/CustomButton";
-import { useNavigation } from "@react-navigation/native";
-import { RootStackNavigation } from "../../navigation/types";
+import { RouteProp, useNavigation } from "@react-navigation/native";
+import { RootStackNavigation, RootStackParamList } from "../../navigation/types";
 import CustomCheckbox from "../components/CustomCheckBox";
-import { generateMobileNumerologyReport } from "../service/APIFunctions";
-import { DashaDataDTO, DashaDTO, MobileNumberDetailsDTO, MobileNumerologyDTO, MobileNumerologyResultsDTO } from "../service/types";
+import { generateMobileNumerologyReport, getAdvanceMobileNumerologyFieldsData, updateAdvanceMobileNumerologyReport } from "../service/APIFunctions";
+import { DashaDataDTO, DashaDTO, MobileNumberDetailsDTO, MobileNumerologyDTO, MobileNumerologyResultsDTO, WallpaperDTO, MobileNumerologyErrorsDTO } from "../service/types";
 import { useAuth } from "../context/AuthContext";
 
 const mobileNumerologySchema = z.object({
@@ -36,20 +37,19 @@ const mobileNumerologySchema = z.object({
   areaOfStruggle: z.array(z.number()).optional(),
 });
 
-type MobileNumerologyErrors = {
-  firstName?: string;
-  middleName?: string;
-  lastName?: string;
-  mobileNumber?: string;
-  email?: string;
-  dob?: string;
-  gender?: string;
-  areaOfStruggle?: number[];
-};
 
-const MobileNumerology = () => {
+type MobileNumerologyRouteProp = RouteProp<RootStackParamList, 'MobileNumerology'>;
+
+interface MobileNumerologyProps {
+  route: MobileNumerologyRouteProp;
+}
+
+
+const MobileNumerology : React.FC<MobileNumerologyProps> = ({route}) => {
   const {token} = useAuth();
   const navigation = useNavigation<RootStackNavigation>();
+  const reportId = route?.params?.reportId;
+  const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -57,7 +57,10 @@ const MobileNumerology = () => {
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
-  const [errors, setErrors] = useState<MobileNumerologyErrors>({});
+  const [errors, setErrors] = useState<MobileNumerologyErrorsDTO>({});
+
+  console.log("Report ID:", reportId);
+
   const genderOptions = [
     { label: "Male", value: "Male" },
     { label: "Female", value: "Female" },
@@ -73,6 +76,34 @@ const MobileNumerology = () => {
   const [selectedAreaOfStruggle, setSelectedAreaOfStruggle] = useState<
     number[]
   >([]);
+
+  useEffect(() => {
+    if(reportId){
+      fetchMobileNumerologyFieldsData();
+    }
+  }, [reportId]);
+
+
+
+  const fetchMobileNumerologyFieldsData = async () => {
+    setLoading(true);
+    try{
+      const response = await getAdvanceMobileNumerologyFieldsData(token || '', reportId || 0);
+      const responseData = response.data.record;
+      setFirstName(responseData.first_name);
+      setMiddleName(responseData.middle_name);
+      setLastName(responseData.last_name);
+      setDob(responseData.date_of_birth);
+      setEmail(responseData.email);
+      setGender(responseData.gender);
+      setMobileNumber(responseData.mobile_no);
+      console.log("Mobile numerology fields data:", responseData);
+    }catch(error){
+      console.error("Get mobile numerology report failed:", error);
+    }finally{
+      setLoading(false);
+    }
+  };
 
   const toggleOption = (id: number) => {
     setSelectedAreaOfStruggle((prev) =>
@@ -93,9 +124,9 @@ const MobileNumerology = () => {
     });
 
     if (!result.success) {
-      const fieldErrors: MobileNumerologyErrors = {};
+      const fieldErrors: MobileNumerologyErrorsDTO = {};
       result.error.issues.forEach((issue) => {
-        const field = issue.path[0] as keyof MobileNumerologyErrors;
+        const field = issue.path[0] as keyof MobileNumerologyErrorsDTO;
         if (field) {
           fieldErrors[field] = issue.message;
         }
@@ -169,6 +200,13 @@ const MobileNumerology = () => {
         "Nice to meet you",
       ],
       recommendedWallpaper: wallpapers.king_number_wallpaper,
+      areaOfStruggle : wallpapers?.area_wallpapers?.map((wallpaper : WallpaperDTO) => {
+        return {
+          id : wallpaper.id,
+          name : wallpaper.name,
+          image_url : wallpaper.image_url
+        }
+      }),
     };
 
     const dashaData : DashaDataDTO = {
@@ -188,6 +226,36 @@ const MobileNumerology = () => {
     Alert.alert("Generate mobile numerology report failed!");
   }
 };
+
+const handleUpdateReport = async () => {
+  try {
+    if(!ValidateForm()) {
+      return;
+    }
+
+    const body : MobileNumerologyDTO = {
+      firstName: firstName,
+      middleName: middleName,
+      lastName: lastName,
+      mobileNo: mobileNumber,
+      countryCode: "91",
+      dateOFBirth: dob,
+      gender: gender,
+      emailId: email,
+      areaOfStruggle: selectedAreaOfStruggle
+  }
+
+    const response = await updateAdvanceMobileNumerologyReport(token || "", reportId || 0, body);
+    const status = response.status;
+    if(status === "success"){
+      Alert.alert("Update mobile numerology report successfully!");
+    }
+    
+  }catch(error){
+    console.error("Update mobile numerology report failed:", error);
+    Alert.alert("Update mobile numerology report failed!");
+  }
+}
 
 const parseDashaData = (rawData: string): DashaDataDTO => {
   const periods: string[] = rawData.split('<hr/>');
@@ -239,6 +307,8 @@ const parseDashaData = (rawData: string): DashaDataDTO => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
       >
+        {reportId && loading && <ActivityIndicator size="large" color="#000" />}
+        {!loading && (
         <ScrollView style={{ flex: 1, height: "100%", }}>
           <CustomInput
             label="First Name"
@@ -335,11 +405,15 @@ const parseDashaData = (rawData: string): DashaDataDTO => {
           </View>
 
           <View style={styles.buttonContainer}>
-            <CustomButton
+            {reportId ? <CustomButton
+              title="Update Report"
+              onPress={handleUpdateReport}
+              style={styles.button}
+            /> : <CustomButton
               title="Generate Report"
               onPress={handleGenerateReport}
               style={styles.button}
-            />
+            />}
 
             <CustomButton
               title="Reset"
@@ -347,7 +421,7 @@ const parseDashaData = (rawData: string): DashaDataDTO => {
               style={[styles.button, { backgroundColor: "green" }]}
             />
           </View>
-        </ScrollView>
+        </ScrollView>)}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

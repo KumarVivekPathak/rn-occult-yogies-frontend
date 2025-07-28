@@ -145,3 +145,36 @@ export const generateMobileNumerologyReport = async (
     throw error;
   }
 };
+
+export const getAdvanceMobileNumerologyFieldsData = async (token : string, id : number) => {
+  try{
+    const response = await axios.get(`${BaseURL}/advance-mobile-numerology/${id}/edit`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  }catch(error){
+    console.error("Get advance mobile numerology report failed:", error);
+    throw error;
+  }
+}
+  
+
+export const updateAdvanceMobileNumerologyReport = async (token : string, id : number, body : MobileNumerologyDTO) => {
+  try {
+    const response = await axios.put(
+      `${BaseURL}/advance-mobile-numerology/${id}`,
+      body,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Update mobile numerology report failed:', error);
+    throw error;
+  }
+}
