@@ -247,8 +247,17 @@ const handleUpdateReport = async () => {
 
     const response = await updateAdvanceMobileNumerologyReport(token || "", reportId || 0, body);
     const status = response.status;
-    if(status === "success"){
-      Alert.alert("Update mobile numerology report successfully!");
+    if (status === "success") {
+      Alert.alert(
+        "Success",
+        "Update mobile numerology report successfully!",
+        [
+          {
+            text: "OK",
+            onPress: () => navigation.goBack()
+          }
+        ]
+      );
     }
     
   }catch(error){
