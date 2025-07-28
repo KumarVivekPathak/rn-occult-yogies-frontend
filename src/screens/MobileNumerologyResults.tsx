@@ -244,7 +244,8 @@ const MobileNumerologyResults : React.FC<MobileNumerologyResultsProps> = ({route
             style={{ width: 170, height: 170, marginLeft: 5 }}
           />
         </View>
-        <View style={styles.detailsRow}>
+        {mobileNumberDetails.areaOfStruggle && mobileNumberDetails.areaOfStruggle.length > 0 && (
+          <View style={styles.detailsRow}>
           <Text style={styles.label}>Area of Struggle :</Text>
           <FlatList
             data={mobileNumberDetails.areaOfStruggle}
@@ -262,6 +263,8 @@ const MobileNumerologyResults : React.FC<MobileNumerologyResultsProps> = ({route
             )}
           />
         </View>
+        )}
+        
       </>
     );
   };
@@ -460,8 +463,8 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   valueContainer: {
-    flexDirection: "row",
+    justifyContent: 'center',
     alignItems: "center",
-    gap: 4,
+    gap: 1,
   },
 });
