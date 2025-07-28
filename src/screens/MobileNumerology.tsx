@@ -19,7 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import { RootStackNavigation } from "../../navigation/types";
 import CustomCheckbox from "../components/CustomCheckBox";
 import { generateMobileNumerologyReport } from "../service/APIFunctions";
-import { MobileNumerologyDTO } from "../service/types";
+import { DashaDataDTO, DashaDTO, MobileNumberDetailsDTO, MobileNumerologyDTO, MobileNumerologyResultsDTO } from "../service/types";
 import { useAuth } from "../context/AuthContext";
 
 const mobileNumerologySchema = z.object({
@@ -139,17 +139,97 @@ const MobileNumerology = () => {
 
     console.log("Mobile numerology:", body);
     
+    
     const response = await generateMobileNumerologyReport(token || "",body);
-    console.log("Mobile numerology response:", response);
+    const responseData = response.data;
+    const personalInfo = responseData.personal_info;
+    const mobileAnalysis = responseData.mobile_analysis;
+    const missingElements = responseData.missing_elements;
+    const charts = responseData.charts;
+    const wallpapers = responseData.wallpapers;
+    const dashaChart = parseDashaData(charts.dasha_chart);
 
-    // navigation.navigate("MobileNumerologyResults");
+    const mobileNumberDetails : MobileNumberDetailsDTO = {
+      dob : personalInfo.date_of_birth,
+      mobileNumber: mobileAnalysis.mobile_number,
+      mobileNumberCompound: mobileAnalysis.compound_number,
+      mobileNumberTotal: mobileAnalysis.total_number,
+      recommendedMobileNumber: mobileAnalysis.message,
+      luckyColours: mobileAnalysis.lucky_color.split(","),
+      unLuckeyColor: mobileAnalysis.unlucky_color.split(","),
+      luckeyNumber: mobileAnalysis.lucky_numbers,
+      unLuckeyNumber: mobileAnalysis.unlucky_numbers,
+      neutralNumber: mobileAnalysis.neutral_numbers,
+      missingNumber: missingElements.missing_numbers,
+      mobileCombination: mobileAnalysis.combinations.combinations,
+      recomendation: "It is not recomended to use",
+      prediction: [
+        "You are a lucky person",
+        "YOu can use it.",
+        "Nice to meet you",
+      ],
+      recommendedWallpaper: wallpapers.king_number_wallpaper,
+    };
 
-    // console.log("Form submitted successfully");
-    // Add your form submission logic here
+    const dashaData : DashaDataDTO = {
+      rulingPlanet: dashaChart.rulingPlanet,
+      dashas: dashaChart.dashas,
+    };
+
+    const mobileNumerologyResultsObject : MobileNumerologyResultsDTO = {
+      mobileNumberDetails,
+      dashaData,
+    };
+
+    navigation.navigate("MobileNumerologyResults", {data : mobileNumerologyResultsObject});
+
   } catch (error) {
     console.error("Generate mobile numerology report failed:", error);
     Alert.alert("Generate mobile numerology report failed!");
   }
+};
+
+const parseDashaData = (rawData: string): DashaDataDTO => {
+  const periods: string[] = rawData.split('<hr/>');
+  let rulingPlanet: string = '';
+  const dashas: DashaDTO[] = [];
+  
+  periods.forEach((period: string) => {
+    const lines: string[] = period.split('<br/>').filter(line => line.trim());
+    
+    let currentDasha: DashaDTO = {
+      period: '',
+      sequence: '',
+      description: ''
+    };
+    
+    const descriptions: string[] = [];
+    
+    lines.forEach((line: string) => {
+      const cleanLine: string = line.trim();
+      
+      if (cleanLine.includes('Ruling Planet Is:')) {
+        rulingPlanet = cleanLine.replace('Ruling Planet Is:', '').replace(/<\/?b>/g, '').trim();
+      } else if (cleanLine.includes('Dasha is:')) {
+        const dashaInfo: string = cleanLine.replace('Dasha is:', '').trim();
+        const parts: string[] = dashaInfo.split('=>');
+        if (parts.length === 2) {
+          currentDasha.period = parts[0].trim().replace(/\s-\s/g, ' to ');
+          currentDasha.sequence = parts[1].trim();
+        }
+      } else if (cleanLine.match(/^\d+\./)) {
+        const point: string = cleanLine.replace(/^\d+\.\s*/, '');
+        descriptions.push(point);
+      }
+    });
+    
+    if (currentDasha.period && descriptions.length > 0) {
+      currentDasha.description = descriptions.join(' ');
+      dashas.push(currentDasha);
+    }
+  });
+  
+  return { rulingPlanet, dashas };
 };
 
   return (

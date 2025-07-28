@@ -80,4 +80,38 @@ export interface MobileNumerologyReportDTO {
     id : string;
     name : string;
 }
+
+export interface DashaDTO {
+    period: string;
+    sequence: string;
+    description: string;
+}
+  
+export interface DashaDataDTO {
+    rulingPlanet: string;
+    dashas: DashaDTO[];
+}
+
+export interface MobileNumberDetailsDTO {
+    dob : string,
+    mobileNumber: string,
+    mobileNumberCompound: string,
+    mobileNumberTotal: string,
+    recommendedMobileNumber: string,
+    luckyColours: string[],
+    unLuckeyColor: string[],
+    luckeyNumber: number[],
+    unLuckeyNumber: number[],
+    neutralNumber: number[],
+    missingNumber: number[],
+    mobileCombination: string[],
+    recomendation: string,
+    prediction: string[],
+    recommendedWallpaper: string,
+  };
     
+export interface MobileNumerologyResultsDTO {
+    mobileNumberDetails: mobileNumberDetailsDTO,
+    dashaData: DashaDataDTO,
+}
+

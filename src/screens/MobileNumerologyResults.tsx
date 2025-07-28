@@ -11,9 +11,19 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomLoshuGrid from "../components/CustomLoshuGrid";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { MobileNumerologyResultsDTO } from "../service/types";
+import { RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "../../navigation/types";
 
-const MobileNumerologyResults = () => {
-  const [dob, setDob] = useState("19-09-2002");
+type MobileNumerologyResultsRouteProp = RouteProp<RootStackParamList, 'MobileNumerologyResults'>;
+
+interface MobileNumerologyResultsProps {
+  route: MobileNumerologyResultsRouteProp;
+}
+
+const MobileNumerologyResults : React.FC<MobileNumerologyResultsProps> = ({route}) => {
+  const data : MobileNumerologyResultsDTO = route.params.data;
+  const [dob, setDob] = useState(data.mobileNumberDetails.dob);
   const [openSection, setOpenSection] = useState<Number | null>();
   const loshuGridData: string[][] = [
     ["", "99", "22"],
@@ -45,46 +55,49 @@ const MobileNumerologyResults = () => {
     },
   ];
 
-  const mobileNumerDetails = {
-    mobileNumber: "9760306834",
-    mobileNumberCompound: "46",
-    mobileNumberTotal:
-      "1, You are a lucky person here are the mmultiple and more details",
-    recommendedMobileNumber:
-      "Your Recomended MobileNumber should be 1, 2, 3. Your mobile number total should come to 1,3,5 (add all the numbers and reduce it to one digit), example given below. Just make sure that numbers like 7, 8, 4 should not be present in mobile number if possible. Example – 9113157851 - Total comes = 41, further total comes 5",
-    luckyColours: ["Red", "Orange", "White", "Yellow", "Green"],
-    unLuckeyColor: "Black",
-    luckeyNumber: [1, 2, 3, 5],
-    unLuckeyNumber: [8],
-    neutralNumber: [4, 6, 7, 9],
-    misiingNumber: [7, 8, 4],
-    mobileCombination: [
-      {
-        combination: "97",
-        type: "Neutral",
-      },
-      {
-        combination: "76",
-        type: "Mellific",
-      },
-      {
-        combination: "83",
-        type: "Benific",
-      },
-      {
-        combination: "83",
-        type: "Benific",
-      },
-    ],
-    recomendation: "It is not recomended to use",
-    prediction: [
-      "You are a lucky person",
-      "YOu can use it.",
-      "Nice to meet you",
-    ],
-    recommendedWallpaper:
-      "https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-  };
+  // const mobileNumberDetails = {
+  //   mobileNumber: "9760306834",
+  //   mobileNumberCompound: "46",
+  //   mobileNumberTotal:
+  //     "1, You are a lucky person here are the mmultiple and more details",
+  //   recommendedMobileNumber:
+  //     "Your Recomended MobileNumber should be 1, 2, 3. Your mobile number total should come to 1,3,5 (add all the numbers and reduce it to one digit), example given below. Just make sure that numbers like 7, 8, 4 should not be present in mobile number if possible. Example – 9113157851 - Total comes = 41, further total comes 5",
+  //   luckyColours: ["Red", "Orange", "White", "Yellow", "Green"],
+  //   unLuckeyColor: "Black",
+  //   luckeyNumber: [1, 2, 3, 5],
+  //   unLuckeyNumber: [8],
+  //   neutralNumber: [4, 6, 7, 9],
+  //   missingNumber: [7, 8, 4],
+  //   mobileCombination: [
+  //     {
+  //       combination: "97",
+  //       type: "Neutral",
+  //     },
+  //     {
+  //       combination: "76",
+  //       type: "Mellific",
+  //     },
+  //     {
+  //       combination: "83",
+  //       type: "Benific",
+  //     },
+  //     {
+  //       combination: "83",
+  //       type: "Benific",
+  //     },
+  //   ],
+  //   recomendation: "It is not recomended to use",
+  //   prediction: [
+  //     "You are a lucky person",
+  //     "YOu can use it.",
+  //     "Nice to meet you",
+  //   ],
+  //   recommendedWallpaper:
+  //     "https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+  // };
+
+  const mobileNumberDetails = data.mobileNumberDetails;
+  const dashaData = data.dashaData;
 
   const numberInsights = [
     {
@@ -104,87 +117,87 @@ const MobileNumerologyResults = () => {
     },
   ];
 
-  const dashaData = {
-    rulingPlanet: "Sun",
-    dashas: [
-      {
-        period: "19 - 09 - 2002 to 2003",
-        sequence: 1,
-        description:
-          "It can bring money, wealth, name... The native will have the acquisition of wealth...",
-      },
-      {
-        period: "19 - 09 - 2003 to 2005",
-        sequence: 2,
-        description:
-          "There are great dealings with the mother  Here the person also feels like being more artistic...",
-      },
-    ],
-  };
+  // const dashaData = {
+  //   rulingPlanet: "Sun",
+  //   dashas: [
+  //     {
+  //       period: "19 - 09 - 2002 to 2003",
+  //       sequence: 1,
+  //       description:
+  //         "It can bring money, wealth, name... The native will have the acquisition of wealth...",
+  //     },
+  //     {
+  //       period: "19 - 09 - 2003 to 2005",
+  //       sequence: 2,
+  //       description:
+  //         "There are great dealings with the mother  Here the person also feels like being more artistic...",
+  //     },
+  //   ],
+  // };
 
   const MobileNumberDetails = () => {
     return (
       <>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Your Mobile Number : </Text>
-          <Text style={styles.value}>{mobileNumerDetails.mobileNumber}</Text>
+          <Text style={styles.value}>{mobileNumberDetails.mobileNumber}</Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Your Mobile Number Compound : </Text>
           <Text style={styles.value}>
-            {mobileNumerDetails.mobileNumberCompound}
+            {mobileNumberDetails.mobileNumberCompound}
           </Text>
         </View>
         <View style={styles.detailsCol}>
           <Text style={styles.label}>Your Mobile Number Total : </Text>
           <Text style={styles.value}>
-            {mobileNumerDetails.mobileNumberTotal}
+            {mobileNumberDetails.mobileNumberTotal}
           </Text>
         </View>
         <View style={styles.detailsCol}>
           <Text style={styles.label}>Recomended Mobile Number :</Text>
           <Text style={styles.value}>
-            {mobileNumerDetails.recommendedMobileNumber}
+            {mobileNumberDetails.recommendedMobileNumber}
           </Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Lucky Colors :</Text>
           <Text style={styles.value}>
-            {mobileNumerDetails.luckyColours.join(", ")}
+            {mobileNumberDetails.luckyColours.join(", ")}
           </Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Unlucky Colors :</Text>
-          <Text style={styles.value}>{mobileNumerDetails.unLuckeyColor}</Text>
+          <Text style={styles.value}>{mobileNumberDetails.unLuckeyColor}</Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Lucky Numbers :</Text>
           <Text style={styles.value}>
-            {mobileNumerDetails.luckeyNumber.join(", ")}
+            {mobileNumberDetails.luckeyNumber.join(", ")}
           </Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Unlucky Numbers :</Text>
           <Text style={styles.value}>
-            {mobileNumerDetails.unLuckeyNumber.join(", ")}
+            {mobileNumberDetails.unLuckeyNumber.join(", ")}
           </Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Neutral Numbers :</Text>
           <Text style={styles.value}>
-            {mobileNumerDetails.neutralNumber.join(", ")}
+            {mobileNumberDetails.neutralNumber.join(", ")}
           </Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Missing Numbers :</Text>
           <Text style={styles.value}>
-            {mobileNumerDetails.misiingNumber.join(", ")}
+            {mobileNumberDetails.missingNumber.join(", ")}
           </Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Mobile Number Combination :</Text>
           <FlatList
-            data={mobileNumerDetails.mobileCombination}
+            data={mobileNumberDetails.mobileCombination}
             renderItem={({ item }) => (
               <Text
                 style={[
@@ -209,13 +222,13 @@ const MobileNumerologyResults = () => {
               { color: "red", textAlign: "center", alignSelf: "center" },
             ]}
           >
-            {mobileNumerDetails.recomendation}
+            {mobileNumberDetails.recomendation}
           </Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Prediction :</Text>
           <FlatList
-            data={mobileNumerDetails.prediction}
+            data={mobileNumberDetails.prediction}
             renderItem={({ item }) => (
               <Text style={styles.value}>
                 {"\u2022"} {item}
